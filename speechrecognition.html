@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Непрерывное распознавание речи</title>
+</head>
+<body>
+  <h1>Распознавание речи с постоянным прослушиванием</h1>
+  <button id="start-btn">Начать запись</button>
+  <button id="stop-btn">Остановить запись</button>
+  <p id="output">Ваш текст появится здесь...</p>
+
+  <script>
+    // Проверяем поддержку Web Speech API
+    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+      alert('Ваш браузер не поддерживает распознавание речи.');
+    } else {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+
+      // Настройки распознавания
+      recognition.lang = 'ru-RU'; // Язык распознавания (русский)
+      recognition.interimResults = false; // Только окончательные результаты
+      recognition.continuous = true; // Непрерывное прослушивание
+
+      const startBtn = document.getElementById('start-btn');
+      const stopBtn = document.getElementById('stop-btn');
+      const output = document.getElementById('output');
+
+      // Запуск распознавания
+      startBtn.addEventListener('click', () => {
+        output.textContent = 'Слушаю...';
+        recognition.start();
+      });
+
+      // Остановка распознавания
+      stopBtn.addEventListener('click', () => {
+        recognition.stop();
+        output.textContent = 'Прослушивание остановлено.';
+      });
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase();
+        output.textContent = `Вы сказали: "${transcript}"`;
+
+        // Проверка на ключевые слова
+        if (transcript.includes('свод') || transcript.includes('свода')) {
+          window.open('https://lookerstudio.google.com/reporting/150c3245-728e-484a-950b-fb74a73c9b9c/page/p_o00uyvhjkd', '_blank');
+        } else if (transcript.includes('часовой') || transcript.includes('часовую')) {
+          window.open('https://lookerstudio.google.com/reporting/150c3245-728e-484a-950b-fb74a73c9b9c/page/iqA7D', '_blank');
+        } else if (transcript.includes('ежедневную добычу') || transcript.includes('добычу') || transcript.includes('добыча') || transcript.includes('ежедневная добыча')) {
+          window.open('https://lookerstudio.google.com/reporting/150c3245-728e-484a-950b-fb74a73c9b9c/page/p_9tym4mgrkd', '_blank');
+        } else if (transcript.includes('снип') || transcript.includes('сниб')) {
+          window.open('https://lookerstudio.google.com/reporting/150c3245-728e-484a-950b-fb74a73c9b9c/page/p_bvny49sqmd', '_blank');
+        } else if (transcript.includes('разбивка') || transcript.includes('разбивку') || transcript.includes('разпивка')) {
+          window.open('https://lookerstudio.google.com/reporting/150c3245-728e-484a-950b-fb74a73c9b9c/page/p_xcxkqhvxjd', '_blank');
+        } else if (transcript.includes('давление') || transcript.includes('давлению')) {
+          window.open('https://lookerstudio.google.com/reporting/150c3245-728e-484a-950b-fb74a73c9b9c/page/p_7oca1c78ld', '_blank');
+        } else if (transcript.includes('мероприятие') || transcript.includes('мероприятию')) {
+          window.open('https://lookerstudio.google.com/reporting/150c3245-728e-484a-950b-fb74a73c9b9c/page/p_w6smv8z3md', '_blank');
+        }
+      };
+
+      recognition.onerror = (event) => {
+        output.textContent = `Ошибка: ${event.error}`;
+        if (event.error === 'no-speech') {
+          recognition.stop(); // Остановить и перезапустить при отсутствии речи
+          recognition.start();
+        }
+      };
+
+      recognition.onend = () => {
+        output.textContent = 'Слушаю...';
+        recognition.start(); // Перезапуск распознавания для непрерывного прослушивания
+      };
+    }
+  </script>
+</body>
+</html>
